@@ -1,8 +1,9 @@
-var express = require("express");
-var ejs = require("ejs");
+const PORT = process.env.PORT || 8080; // default port 8080
+const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-var app = express();
-var PORT = process.env.PORT || 8080; // default port 8080
+const express = require("express");
+const ejs = require("ejs");
+const app = express();
 
 function generateRandomString() {
   return Math.random().toString(36).substring(2, 8);
@@ -42,6 +43,12 @@ app.get("/urls/:id", (req, res) => {
     shortURL: req.params.id
   };
   res.render("urls_show", templateVars);
+});
+
+app.post("/login", (req, res) => {
+  console.log(req.body.username)
+  res.cookie('username', req.body.username);
+  res.redirect(301, "/urls")
 });
 
 app.post("/urls/:id/edit", (req, res) =>{
