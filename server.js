@@ -33,7 +33,6 @@ app.get("/urls/new", (req, res) => {
 app.post("/urls", (req, res) => {
   var newId = generateRandomString();
   let longURL = req.body.longURL
-  console.log(req.body.longURL); // debug statement to see POST parameters
   urlDatabase[newId] = req.body.longURL
   res.redirect('urls');
 });
@@ -46,7 +45,6 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls/:id/edit", (req, res) =>{
-  console.log(req.params);
   urlDatabase[req.params.id] = req.body.longURL;
   res.redirect("/urls");
 });
