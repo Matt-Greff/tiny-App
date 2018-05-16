@@ -1,0 +1,29 @@
+<!DOCTYPE hmtl>
+<html lang="en">
+
+<head>
+  <%- include('partials/head'); -%>
+</head>
+<header>
+  <%- include('partials/_header'); -%>
+</header>
+
+<body style="font-family: arial; font-size:20px; padding:50px;">
+  <ul>
+    <% for(var key in urls){ %>
+      <li>
+        <a href=< %='u/' + key %>>
+          <%= key %>
+        </a>
+        <%= urls[key] %>
+        <a href="/urls/<%= key %>">edit</a>
+          <form method="POST" action="/urls/<%= key %>/delete">
+            <input type="submit" value="delete">
+          </form>
+      </li>
+      <% } %>
+  </ul>
+</body>
+
+</html>
+
