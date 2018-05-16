@@ -1,5 +1,5 @@
 var express = require("express");
-var ejs = require('ejs');
+var ejs = require("ejs");
 const bodyParser = require("body-parser");
 var app = express();
 var PORT = process.env.PORT || 8080; // default port 8080
@@ -45,9 +45,15 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.post("/urls/:id/edit", (req, res) =>{
+  console.log(req.params);
+  urlDatabase[req.params.id] = req.body.longURL;
+  res.redirect("/urls");
+});
+
 app.post("/urls/:id/delete", (req, res) =>{
   delete urlDatabase[req.params.id];
-  res.redirect("/urls")
+  res.redirect("urls")
 });
 
 app.get(`/u/:shortURL`, (req, res) => {
