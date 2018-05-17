@@ -20,15 +20,23 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+app.use(cookieParser());
+
 app.get("/urls", (req, res) => {
+  console.log(req.cookies.username)
   let templateVars = {
-    urls: urlDatabase
+    urls: urlDatabase,
+    username: req.cookies.username
   };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  console.log(req.cookies.username);
+  let templateVars = {
+    username: req.cookies.username
+  };
+  res.render("urls_new", templateVars);
 });
 
 app.post("/urls", (req, res) => {
@@ -40,16 +48,21 @@ app.post("/urls", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
-    shortURL: req.params.id
+    shortURL: req.params.id,
+    username: req.cookies.username
   };
   res.render("urls_show", templateVars);
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body.username)
   res.cookie('username', req.body.username);
   res.redirect(301, "/urls")
 });
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect(301, "/urls")
+})
 
 app.post("/urls/:id/edit", (req, res) =>{
   urlDatabase[req.params.id] = req.body.longURL;
