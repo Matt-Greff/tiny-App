@@ -5,14 +5,14 @@
   <%- include('partials/_header'); -%>
 </header>
 
-<body style="font-family: arial; font-size:20px; padding:50px;">
+<body style="font-family: arial; font-size:20px; padding:1px;">
   <li>Short Link --->
     <%=shortURL%>
   </li>
 
-  <form action="/urls/<%= shortURL %>/edit" method="POST" style="margin:150px;">
+  <form action="/urls/<%= shortURL %>/edit" method="POST" style="align-content: left;">
     <label for="longURL">Enter a URL:</label>
-    <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
+    <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 200px">
     <input type="submit" value="Submit">
   </form>
 

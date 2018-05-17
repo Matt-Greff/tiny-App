@@ -1,29 +1,32 @@
 <!-- views/partials/header.ejs -->
 
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-default" role="navigation" style="align-content: center;">
   <div class="container-fluid">
 
     <div class="navbar-header">
       TINY APP
       </a>
 
-      <ul class="nav navbar-nav">
-        <% if(username === undefined){%>
-          <form method="POST" action="/login">
-            <input id="username" name="username" type="text" placeholder="username">
-            <input type="submit" value="login">
-          </form>
-          <% } else { %>
-            <a>Welcome
-              <%= username %>!</a>
-              <form method="POST" action="/logout">
+      <ul>
+
+        <% if(user_id) { %>
+
+          <a>Welcome
+              <%= user_id.email %>!</a>
+
+            <form method="POST" action="/logout" style="margin-bottom:20px;">
+
               <input type="submit" value="logout">
-              </form>
+
+            </form>
+          <% } else { %>
+            <a>Please <a href="/login">Login</a></a>
             <% } %>
               <li><a style=padding-right:10px href="/urls">Home</a>
                 <a href="/urls/new">New URL</a>
               </li>
       </ul>
+
     </div>
   </div>
 </nav>

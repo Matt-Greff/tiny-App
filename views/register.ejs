@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('partials/head'); -%>
+</head>
+
+<body style="font-family: arial; font-size:20px; padding:50px;">
+  <% include partials/_header %>
+    <form action="/register" method="POST" style="margin:0px;">
+      Register
+      <br/>
+      <input id="email" type="text" name="email" placeholder="email address" style="width: 300px">
+      <br/>
+      <input id="password" type="text" name="password" placeholder="password" style="width: 300px;">
+      <input type="submit" value="Submit">
+    </form>
+</body>
+
+</html>
