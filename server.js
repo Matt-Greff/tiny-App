@@ -1,21 +1,25 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const bodyParser = require("body-parser");
+const cookieSession = require("cookie-session");
+const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 8080; // default port 8080
 const app = express();
-
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['asdf', 'asde', 'wqwwt'],
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
 
 app.use('/', (req, res, next) => {
-  res.locals.user_id = req.cookies.id;
-  console.log('local:', res.locals.user_id)
+  res.locals.user_id = req.session.id;
   next();
 });
 
@@ -24,37 +28,76 @@ function generateRandomString() {
     .toString(36)
     .substring(2, 8);
 }
-//////////////////////////////////////////////debugging this///////////////////////////////////////////////////
+
 function emailAuthenticator(form, cookie) {
   if (form.email === '' || form.password === '') {
     return 'You left it blank yo!';
   }
   for (let id in users) {
-    console.log(form.password);
     if (users[id].email === form.email) {
-      return (cookie && users[id].password === form.password) ? users[id] : false;
+      var passAuth = bcrypt.compareSync(form.password, users[id].password);
+      return (cookie && passAuth) ? users[id] : false;
     } // return value is switched for cookie authenticattion
   }
   return cookie ? false : true;
 }
-//////////////////////////////////////////////debugging this///////////////////////////////////////////////////
+
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth() + 1; //January is 0!
+var yyyy = today.getFullYear();
+
+if (dd < 10) {
+  dd = '0' + dd
+}
+
+if (mm < 10) {
+  mm = '0' + mm
+}
+
+today = mm + '/' + dd + '/' + yyyy;
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+  "b2xVn2": {
+    url: "http://www.lighthouselabs.ca",
+    origin: "user1",
+    views: 0,
+    viewsU: 0,
+    visitors: {},
+    created: '12/03/1997'
+  },
+  "9sm5xK": {
+    url: "http://www.google.com",
+    origin: "d3s2a1",
+    views: 0,
+    viewsU: 0,
+    visitors: {},
+    created: '12/10/1920'
+  }
+}
 
 const users = {
   "user1": {
     id: "user1",
     email: "user@example.com",
-    password: "asdf"
+    password: bcrypt.hashSync("asdf", 10)
   },
   "d3s2a1": {
     id: "d3s2a1",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("ldsa", 10)
   }
 };
+
+app.get("/", (req, res) => {
+  const templateVars = {
+    urls: urlDatabase,
+  };
+  if (!req.session.id === undefined) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login")
+  }
+});
 
 app.get("/urls", (req, res) => {
   const templateVars = {
@@ -64,13 +107,26 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  console.log('users', users);
+  console.log('full: ', users[req.session.id]);
+  if (typeof req.session.id === 'object') {
+    res.render("urls_new")
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/urls", (req, res) => {
   const newId = generateRandomString();
   const longURL = req.body.longURL
-  urlDatabase[newId] = req.body.longURL
+  urlDatabase[newId] = {
+    url: longURL,
+    origin: req.session.id.id,
+    views: 0,
+    viewsU: 0,
+    created: today,
+    visitors: {}
+  }
   res.redirect('urls');
 });
 
@@ -78,49 +134,67 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     shortURL: req.params.id
   };
-  res.render("urls_show", templateVars);
+  if (urlDatabase[req.params.id].origin === req.session.id.id) {
+    res.render("urls_show", templateVars);
+  } else {
+    res.send("login to access your short URL's")
+  }
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  console.log(typeof req.session.id === 'object');
+  if (typeof req.session.id === 'object') {
+    res.redirect("/urls")
+  } else {
+    res.render("register");
+  }
 });
 
 app.post("/register", (req, res, next) => {
+  if (req.body.email === '' || req.body.password === '') {
+    res.send('you left a field blank')
+  }
   if (emailAuthenticator(req.body, false)) {
     const id = generateRandomString();
     users[id] = {
       id: id,
       email: req.body.email,
-      password: req.body.password
+      password: bcrypt.hashSync(req.body.password, 10)
     }
   } else {
-    res.status(404);
+    res.send('your email has already been taken');
   }
-  console.log(users);
-  res.redirect(301, "/urls");
+  res.redirect(302, "/login");
 });
 
 app.get("/login", (req, res) => {
-  res.render("login")
+
+  if (req.session.id === undefined) {
+    res.render("login");
+  } else {
+    res.redirect("/urls")
+  }
 });
-//////////////////////////////////////////////debugging this///////////////////////////////////////////////////
+
 app.post("/login", (req, res) => {
-  console.log('debugging of appPostLogin', emailAuthenticator(req.body, true));
+  if (req.body.email === req.session.id){
+    req.session.id = null;
+  }
   if (emailAuthenticator(req.body, true)) {
-    res.cookie('id', emailAuthenticator(req.body, true));
+    req.session.id = emailAuthenticator(req.body, true);
     res.redirect("/urls");
   } else {
     res.render("login");
   }
 });
-//////////////////////////////////////////////debugging this///////////////////////////////////////////////////
+
 app.post("/logout", (req, res) => {
-  res.clearCookie("id");
-  res.redirect(301, "/login")
+  req.session = null;
+  res.redirect(302, "/login")
 });
 
 app.post("/urls/:id/edit", (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.params.id].url = req.body.longURL;
   res.redirect("/urls");
 });
 
@@ -130,7 +204,20 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.get(`/u/:shortURL`, (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const short = urlDatabase[req.params.shortURL];
+  const thisVisit = req.session.visitor;
+  if (short === undefined) {
+    res.send('that isn\'t a valid short URL');
+  }
+  if (thisVisit === undefined) {
+    req.session.visitor = generateRandomString();
+  }
+  if (short['visitors'][thisVisit] === undefined) {
+    short['visitors'][thisVisit] = true;
+    short['viewsU']++
+  }
+  short['views']++;
+  const longURL = urlDatabase[req.params.shortURL].url;
   res.redirect(longURL);
 });
 

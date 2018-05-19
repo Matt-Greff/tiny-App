@@ -3,31 +3,23 @@
 <head>
   <%- include('partials/head'); -%>
 </head>
+<header>
+  <%- include('partials/_header'); -%>
+</header>
 
-<body style="font-family: arial; font-size:20px; padding:50px;">
-  <% include partials/_header %>
-
-    <% if(user_id === undefined) { %>
-      <form method="POST" action="/login">
-
+<body style="background-color:rgb(75, 75, 75); font-family: monospace; font-size:20px; padding-left:30px; margin: 0; padding-top:20px">
+    <nav class="navbar navbar-default" role="navigation" style="width: 31%; margin: auto;">
+    <div style="border-radius:10px; padding:0px;background-color: darkslategrey; box-shadow: 0px 0px 40px blueviolet; margin: auto;">
+      <% if(user_id === undefined) { %>
+      <form method="POST" action="/login" style="color:aqua; text-shadow: 0px 0px 4px; background-color: rgba(0, 0, 0, 0.514); padding: 10; border-radius: inherit; box-shadow: 0px 0px 31px deepskyblue;">
+        Login
         <input id="email" name="email" type="text" placeholder="email">
         <input id="password" name="password" type="text" placeholder="password">
-        <input type="submit" value="login">
-
+        <input style="box-shadow: 0px 0px 4px aqua; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="login">
       </form>
-      <a>Don't have an account yet?</a>
-      <a href="/register">register</a>
-
-      <% } else { %>
-        <a>You are already logged in!</a>
-
-        <form method="POST" action="/logout" style="margin-bottom:20px;">
-
-          <input type="submit" value="logout">
-
-        </form>
-        <% } %>
+      <% } %>
+    </div>
+  </nav>
 </body>
 
 </html>
-

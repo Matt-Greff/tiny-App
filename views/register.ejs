@@ -1,20 +1,21 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <%- include('partials/head'); -%>
 </head>
+<% include partials/_header %>
 
-<body style="font-family: arial; font-size:20px; padding:50px;">
-  <% include partials/_header %>
-    <form action="/register" method="POST" style="margin:0px;">
-      Register
-      <br/>
-      <input id="email" type="text" name="email" placeholder="email address" style="width: 300px">
-      <br/>
-      <input id="password" type="text" name="password" placeholder="password" style="width: 300px;">
-      <input type="submit" value="Submit">
-    </form>
+<body style="background-color:rgb(75, 75, 75); font-family: monospace; font-size:20px; padding-left:30px; margin: 0; padding-top:20px">
+    <nav class="navbar navbar-default" role="navigation" style="width: 38%; margin: auto;">
+    <div style="border-radius:10px;padding:0px;background-color: darkslategrey;box-shadow: 0px 0px 40px blueviolet;">
+      <form style="color: aqua; text-shadow: 0px 0px 4px; background-color: rgba(0, 0, 0, 0.514); padding: 10; border-radius: inherit; box-shadow: 0px 0px 31px deepskyblue;" action="/register" method="POST">
+        Register
+        <input id="email" type="text" name="email" placeholder="email address" style="width: 200px">
+        <input id="password" type="text" name="password" placeholder="password" style="width: 200px;">
+        <input style="box-shadow: 0px 0px 4px aqua; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="Submit">
+      </form>
+    </div>
+  </nav>
 </body>
 
 </html>

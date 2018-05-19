@@ -1,32 +1,14 @@
 <!-- views/partials/header.ejs -->
-
-<nav class="navbar navbar-default" role="navigation" style="align-content: center;">
-  <div class="container-fluid">
-
-    <div class="navbar-header">
-      TINY APP
-      </a>
-
-      <ul>
-
-        <% if(user_id) { %>
-
-          <a>Welcome
-              <%= user_id.email %>!</a>
-
-            <form method="POST" action="/logout" style="margin-bottom:20px;">
-
-              <input type="submit" value="logout">
-
-            </form>
-          <% } else { %>
-            <a>Please <a href="/login">Login</a></a>
-            <% } %>
-              <li><a style=padding-right:10px href="/urls">Home</a>
-                <a href="/urls/new">New URL</a>
-              </li>
-      </ul>
-
-    </div>
-  </div>
+<% if(user_id === undefined) { %>
+  <a href="/login" style="color: aqua; text-shadow: 0px 0px 4px;">Login</a><a style="color: turquoise;"> or </a>
+  <a href="/register" style="color: aqua; text-shadow: 0px 0px 4px;">register</a>
+<% } else { %>
+  <form method="POST" action="/logout">
+    <a style="color: turquoise;">Welcome <%= user_id.email %>!</a>
+    <input style="box-shadow: 0px 0px 4px plum; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="logout">
+  </form>
+<% } %>
+<nav class="navbar navbar-default" role="navigation" style="margin: auto ;width: 11%; padding-top: 6%;">
+  <a style="text-shadow: 0px 0px 6px aqua;color:aquamarine;" href="/">TINY</a><a href="/" style="text-shadow: 0px 0px 4px turquoise;color:blueviolet;">APP</a>
+  <a style="text-shadow: 0px 0px 4px aqua;color:aquamarine;" href="/urls/new">New URL</a>
 </nav>

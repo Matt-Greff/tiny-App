@@ -1,4 +1,3 @@
-<!DOCTYPE hmtl>
 <html lang="en">
 
 <head>
@@ -8,24 +7,23 @@
   <%- include('partials/_header'); -%>
 </header>
 
-<body style="font-family: arial; font-size:20px; padding:50px;">
-  <ul>
-    <% for(var key in urls){ %>
-      <li>
-        <a href=<%='u/' + key %>>
-          <%= key %>
-        </a>
-        <%= urls[key] %>
-        <a href=<%='urls/' + key %>>
-          edit
-        </a>
-          <form method="POST" action="/urls/<%= key %>/delete">
-            <input type="submit" value="delete">
-          </form>
-      </li>
+<body style="background-color:rgb(75, 75, 75); font-family: monospace; font-size:20px; padding-left:30px; margin: 0; padding-top:20px">
+  <nav class="navbar navbar-default" role="navigation" style="width: 70%; margin: auto;">
+    <div style="border-radius:10px;padding:15px;background-color: darkslategrey;box-shadow: 0px 0px 40px blueviolet; margin: auto;">
+    <% for(var key in urls) { %>
+      <% if (user_id && urls[key].origin === user_id.id) { %>
+        <form style="color:aquamarine;" method="POST" action="/urls/<%= key %>/delete">
+          <input style="box-shadow: 0px 0px 4px aqua; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="delete">
+          <a style="color:blueviolet; text-shadow: 0px 0px 4px turquoise"href=<%='urls/' + key %>>
+            EDIT-->
+          </a>
+          <a style='color:turquoise; text-shadow: 0px 0px 4px ' href=<%='u/' + key %>>
+            <%= key %>
+          </a>
+          <%= urls[key].created %> || views: <%= urls[key].views %> || unique views: <%= urls[key].viewsU %> || <%= urls[key].url %>
+        </form>
       <% } %>
-  </ul>
-</body>
-
+    <% } %>
+  </nav>
+</div>
 </html>
-

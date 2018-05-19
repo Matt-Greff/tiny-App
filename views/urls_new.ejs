@@ -1,17 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
   <%- include('partials/head'); -%>
 </head>
-
-<body style="font-family: arial; font-size:20px; padding:50px;">
-  <% include partials/_header %>
-    <form action="/urls" method="POST" style="margin:150px;margin-top: 0px;">
-      <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-      <input type="submit" value="Submit">
-    </form>
+<header>
+  <%- include('partials/_header'); -%>
+</header>
+<body style="background-color:rgb(75, 75, 75); font-family: monospace; font-size:20px; padding-left:30px; margin: 0; padding-top:20px">
+  <nav class="navbar navbar-default" role="navigation" style="width: 35%; margin: auto;">
+    <div style="border-radius:10px;padding:0px;background-color: rgba(30, 49, 49, 0.527);box-shadow: 0px 0px 40px blueviolet;">
+      <form action="/urls" method="POST" style="background-color: rgba(0, 0, 0, 0.514); padding: 10; border-radius: inherit; box-shadow: 0px 0px 31px deepskyblue;">
+        <label style=" color:darkorchid; text-shadow: 0px 0px 4px" for="longURL">Enter a URL:</label>
+        <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
+        <input style="box-shadow: 0px 0px 4px aqua; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="Submit">
+      </form>
+    </div>
+  </nav>
 </body>
 
 </html>
