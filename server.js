@@ -31,7 +31,7 @@ function generateRandomString() {
 
 function emailAuthenticator(form, cookie) {
   if (form.email === '' || form.password === '') {
-    return 'You left it blank yo!';
+    return false;
   }
   for (let id in users) {
     if (users[id].email === form.email) {
@@ -41,21 +41,22 @@ function emailAuthenticator(form, cookie) {
   }
   return cookie ? false : true;
 }
+function today() {
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1;
+  var yyyy = today.getFullYear();
 
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth() + 1; //January is 0!
-var yyyy = today.getFullYear();
+  if (dd < 10) {
+    dd = '0' + dd
+  }
 
-if (dd < 10) {
-  dd = '0' + dd
+  if (mm < 10) {
+    mm = '0' + mm
+  }
+  return mm + '/' + dd + '/' + yyyy;
 }
 
-if (mm < 10) {
-  mm = '0' + mm
-}
-
-today = mm + '/' + dd + '/' + yyyy;
 const urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
@@ -107,8 +108,6 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  console.log('users', users);
-  console.log('full: ', users[req.session.id]);
   if (typeof req.session.id === 'object') {
     res.render("urls_new")
   } else {
@@ -124,7 +123,7 @@ app.post("/urls", (req, res) => {
     origin: req.session.id.id,
     views: 0,
     viewsU: 0,
-    created: today,
+    created: today(),
     visitors: {}
   }
   res.redirect('urls');
@@ -142,7 +141,6 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  console.log(typeof req.session.id === 'object');
   if (typeof req.session.id === 'object') {
     res.redirect("/urls")
   } else {
@@ -177,8 +175,11 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  if (req.body.email === req.session.id){
+  if (req.body.email === req.session.id) {
     req.session.id = null;
+  }
+  if (req.body.email === '' || req.body.password === '') {
+    res.render('login');
   }
   if (emailAuthenticator(req.body, true)) {
     req.session.id = emailAuthenticator(req.body, true);

@@ -4,10 +4,10 @@
 <header>
   <%- include('partials/_header'); -%>
 </header>
-<body style="background-color:rgb(75, 75, 75); font-family: monospace; font-size:20px; padding:50px;">
-  <nav class="navbar navbar-default" role="navigation" style="width: 28%; margin: auto;">
+<body style="background-color:rgb(75, 75, 75); font-family: monospace; font-size:20px; padding-left:30px; margin: 0; padding-top:20px">
+  <nav class="navbar navbar-default" role="navigation" style="width: 27%; margin: auto;">
     <div style="border-radius:10px; padding:0px;background-color: rgba(0, 0, 0, 0.377); box-shadow: 0px 0px 40px blueviolet; margin: auto;">
-      <form action="/urls/<%= shortURL %>/edit" method="POST" style="align-content: left; padding:2px;">
+      <form action="/urls/<%= shortURL %>/edit" method="POST" style="align-content: left; padding:5px;">
         <a style="color: turquoise; text-shadow: 0px 0px 4px turquoise">EDIT>
         <%=shortURL%>
         </a>
