@@ -1,11 +1,15 @@
 const express = require("express");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
+const methodOverride = require("method-override");
 const cookieSession = require("cookie-session");
 const bcrypt = require('bcrypt');
+var moment = require('moment-timezone');
 const PORT = process.env.PORT || 8080; // default port 8080
 const app = express();
 app.set('view engine', 'ejs');
+
+app.use(methodOverride('_method'))
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -41,21 +45,13 @@ function emailAuthenticator(form, cookie) {
   }
   return cookie ? false : true;
 }
-function today() {
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth() + 1;
-  var yyyy = today.getFullYear();
 
-  if (dd < 10) {
-    dd = '0' + dd
-  }
-
-  if (mm < 10) {
-    mm = '0' + mm
-  }
-  return mm + '/' + dd + '/' + yyyy;
+function toTimeZone(time, zone) {
+  var format = 'YYYY/MM/DD HH:mm';
+  return moment(time, format).tz(zone).format(format);
 }
+
+const now = toTimeZone(moment(), 'America/Vancouver');
 
 const urlDatabase = {
   "b2xVn2": {
@@ -64,7 +60,7 @@ const urlDatabase = {
     views: 0,
     viewsU: 0,
     visitors: {},
-    created: '12/03/1997'
+    created: '12/03/1997 01:00'
   },
   "9sm5xK": {
     url: "http://www.google.com",
@@ -72,7 +68,7 @@ const urlDatabase = {
     views: 0,
     viewsU: 0,
     visitors: {},
-    created: '12/10/1920'
+    created: '12/10/1920 13:00'
   }
 }
 
@@ -123,15 +119,17 @@ app.post("/urls", (req, res) => {
     origin: req.session.id.id,
     views: 0,
     viewsU: 0,
-    created: today(),
-    visitors: {}
+    created: now,
+    visitors: {},
+    listOfViews: []
   }
   res.redirect('urls');
 });
 
 app.get("/urls/:id", (req, res) => {
   const templateVars = {
-    shortURL: req.params.id
+    shortURL: req.params.id,
+    urls: urlDatabase
   };
   if (urlDatabase[req.params.id].origin === req.session.id.id) {
     res.render("urls_show", templateVars);
@@ -189,17 +187,17 @@ app.post("/login", (req, res) => {
   }
 });
 
-app.post("/logout", (req, res) => {
+app.delete("/logout", (req, res) => {
   req.session = null;
   res.redirect(302, "/login")
 });
 
-app.post("/urls/:id/edit", (req, res) => {
+app.put("/urls/:id/edit", (req, res) => {
   urlDatabase[req.params.id].url = req.body.longURL;
   res.redirect("/urls");
 });
 
-app.post("/urls/:id/delete", (req, res) => {
+app.delete("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect("/urls")
 });
@@ -218,6 +216,7 @@ app.get(`/u/:shortURL`, (req, res) => {
     short['viewsU']++
   }
   short['views']++;
+  short['listOfViews'].push(`${thisVisit} ${now}`);
   const longURL = urlDatabase[req.params.shortURL].url;
   res.redirect(longURL);
 });

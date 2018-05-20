@@ -1,14 +1,17 @@
 <!-- views/partials/header.ejs -->
 <% if(user_id === undefined) { %>
-  <a href="/login" style="color: aqua; text-shadow: 0px 0px 4px;">Login</a><a style="color: turquoise;"> or </a>
-  <a href="/register" style="color: aqua; text-shadow: 0px 0px 4px;">register</a>
-<% } else { %>
-  <form method="POST" action="/logout">
-    <a style="color: turquoise;">Welcome <%= user_id.email %>!</a>
+  <div style"margin:auto">
+  <a href="/login" style="color: orange; text-shadow: 0px 0px 4px;">Login</a><a style="color: orange;"> or </a>
+  <a href="/register" style="color: orange; text-shadow: 0px 0px 4px;">register</a>
+  </div>
+  <% } else { %>
+  <form method="POST" action="/logout?_method=DELETE">
+    <a style="color: orange;">Welcome <%= user_id.email %>!</a>
     <input style="box-shadow: 0px 0px 4px plum; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="logout">
   </form>
 <% } %>
-<nav class="navbar navbar-default" role="navigation" style="margin: auto ;width: 11%; padding-top: 6%;">
-  <a style="text-shadow: 0px 0px 6px aqua;color:aquamarine;" href="/">TINY</a><a href="/" style="text-shadow: 0px 0px 4px turquoise;color:blueviolet;">APP</a>
+<nav class="navbar navbar-default" role="navigation" style="margin: auto ;width: fit-content; padding-top: 6%;">
+  <a style="text-shadow: 0px 0px 6px aqua;color:aquamarine;" href="/">TINY</a><a href="/" style="text-shadow: 0px 0px 4px;color:orange;">APP</a>
   <a style="text-shadow: 0px 0px 4px aqua;color:aquamarine;" href="/urls/new">New URL</a>
 </nav>
+<body style="background-color: black; font-family: monospace; font-size:20px; padding-left:30px; margin: 0; padding-top:20px">

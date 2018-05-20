@@ -4,16 +4,31 @@
 <header>
   <%- include('partials/_header'); -%>
 </header>
-<body style="background-color:rgb(75, 75, 75); font-family: monospace; font-size:20px; padding-left:30px; margin: 0; padding-top:20px">
-  <nav class="navbar navbar-default" role="navigation" style="width: 27%; margin: auto;">
-    <div style="border-radius:10px; padding:0px;background-color: rgba(0, 0, 0, 0.377); box-shadow: 0px 0px 40px blueviolet; margin: auto;">
-      <form action="/urls/<%= shortURL %>/edit" method="POST" style="align-content: left; padding:5px;">
+<body>
+  <nav class="navbar navbar-default" role="navigation" style="width: 33%; margin: auto;">
+    <div style="padding: 20px; border-radius:10px; background-color: rgba(0, 0, 0, 0.377); box-shadow: 0px 0px 40px aqua; margin: auto;">
+      <form action="/urls/<%= shortURL %>/edit?_method=PUT" method="POST" style="display:inline-block;align-content: center; padding: 0px;">
         <a style="color: turquoise; text-shadow: 0px 0px 4px turquoise">EDIT>
-        <%=shortURL%>
+          <%=shortURL%>
         </a>
-        <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 200px">
+        <input id="longURL" type="text" name="longURL" placeholder="<%= urls[shortURL]['url'] %>" style="width: 200px">
         <input style="box-shadow: 0px 0px 4px aqua; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="Submit">
       </form>
+      <form style="color:aquamarine; display: inline-block;" method="POST" action="/urls/<%= shortURL%>/delete?_method=DELETE">
+        <input style="box-shadow: 0px 0px 4px aqua; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="delete">
+      </form>
+      </br>
+      <% if (urls[shortURL]['listOfViews'].length > 0) { %>
+        <% urls[shortURL]['listOfViews'].forEach(function (view, index) { %>
+          <div style=" width:fit-content; margin: auto">
+            <a style="margin: auto; color: aqua; text-shadow: 0px 0px 4px">
+            <%= index + 1 %>. viewer id: <%= view %>
+              </br>
+            </a>
+          </div>
+        <% }); %>
+      <% } %>
+      </nav>
     </div>
   </nav>
 </body>

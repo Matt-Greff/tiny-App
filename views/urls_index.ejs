@@ -7,22 +7,29 @@
   <%- include('partials/_header'); -%>
 </header>
 
-<body style="background-color:rgb(75, 75, 75); font-family: monospace; font-size:20px; padding-left:30px; margin: 0; padding-top:20px">
-  <nav class="navbar navbar-default" role="navigation" style="width: 70%; margin: auto;">
-    <div style="border-radius:10px;padding:15px;background-color: darkslategrey;box-shadow: 0px 0px 40px blueviolet; margin: auto;">
+<body>
+  <nav class="navbar navbar-default" role="navigation" style="width: fit-content; margin: auto;">
+    <div style="border-radius:10px;padding:15px;background-color: black;box-shadow: 0px 0px 40px aqua; margin: auto;">
+    <% var noContent = true %>
     <% for(var key in urls) { %>
       <% if (user_id && urls[key].origin === user_id.id) { %>
-        <form style="color:aquamarine;" method="POST" action="/urls/<%= key %>/delete">
-          <input style="box-shadow: 0px 0px 4px aqua; border-color:aqua; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="delete">
-          <a style="color:blueviolet; text-shadow: 0px 0px 4px turquoise"href=<%='urls/' + key %>>
+        <form style="padding:0px; margin: 0px; color:aqua;" method="POST" action="/urls/<%= key %>/delete?_method=DELETE">
+          <p style="margin:15px">
+          <input style="box-shadow: 0px 0px 4px aqua;; border-color:aqua;; background-color: rgba(0, 0, 0, 0.377); color: turquoise; border-radius: 5px; text-shadow: 0px 0px 4px turquoise" type="submit" value="delete">
+          <a style="color:orange; text-shadow: 0px 0px 4px"href=<%='urls/' + key %>>
             EDIT-->
           </a>
           <a style='color:turquoise; text-shadow: 0px 0px 4px ' href=<%='u/' + key %>>
             <%= key %>
           </a>
           <%= urls[key].created %> || views: <%= urls[key].views %> || unique views: <%= urls[key].viewsU %> || <%= urls[key].url %>
+        </p>
         </form>
+      <% noContent = false %>
       <% } %>
+    <% } %>
+    <% if (noContent) { %>
+      <p style=" margin: 10px; color:orange">try adding a URL!!</p>
     <% } %>
   </nav>
 </div>
