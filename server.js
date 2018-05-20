@@ -10,18 +10,15 @@ const app = express();
 app.set('view engine', 'ejs');
 
 app.use(methodOverride('_method'))
-
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-
 app.use(cookieSession({
   name: 'session',
   keys: ['asdf', 'asde', 'wqwwt'],
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
-
 app.use('/', (req, res, next) => {
   res.locals.user_id = req.session.id;
   next();
@@ -32,7 +29,6 @@ function generateRandomString() {
     .toString(36)
     .substring(2, 8);
 }
-
 function emailAuthenticator(form, cookie) {
   if (form.email === '' || form.password === '') {
     return false;
@@ -45,7 +41,6 @@ function emailAuthenticator(form, cookie) {
   }
   return cookie ? false : true;
 }
-
 function toTimeZone(time, zone) {
   var format = 'YYYY/MM/DD HH:mm';
   return moment(time, format).tz(zone).format(format);
@@ -111,6 +106,55 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
+app.get("/urls/:id", (req, res) => {
+  const templateVars = {
+    shortURL: req.params.id,
+    urls: urlDatabase
+  };
+  if (urlDatabase[req.params.id].origin === req.session.id.id) {
+    res.render("urls_show", templateVars);
+  } else {
+    res.send("login to access your short URL's")
+  }
+});
+
+app.get("/login", (req, res) => {
+
+  if (req.session.id === undefined) {
+    res.render("login");
+  } else {
+    res.redirect("/urls")
+  }
+});
+
+app.get("/register", (req, res) => {
+  if (typeof req.session.id === 'object') {
+    res.redirect("/urls")
+  } else {
+    res.render("register");
+  }
+});
+
+app.get(`/u/:shortURL`, (req, res) => {
+
+  const short = urlDatabase[req.params.shortURL];
+  if (short === undefined) {
+    res.send('that isn\'t a valid short URL');
+  }
+  if (req.session.visitor === undefined) {
+    req.session.visitor = generateRandomString();
+  }
+  const thisVisit = req.session.visitor;
+  if (short['visitors'][thisVisit] === undefined) {
+    short['visitors'][thisVisit] = true;
+    short['viewsU']++
+  }
+  short['views']++;
+  short['listOfViews'].push(`${thisVisit} ${now}`);
+  const longURL = urlDatabase[req.params.shortURL].url;
+  res.redirect(longURL);
+});
+
 app.post("/urls", (req, res) => {
   const newId = generateRandomString();
   const longURL = req.body.longURL
@@ -124,26 +168,6 @@ app.post("/urls", (req, res) => {
     listOfViews: []
   }
   res.redirect('urls');
-});
-
-app.get("/urls/:id", (req, res) => {
-  const templateVars = {
-    shortURL: req.params.id,
-    urls: urlDatabase
-  };
-  if (urlDatabase[req.params.id].origin === req.session.id.id) {
-    res.render("urls_show", templateVars);
-  } else {
-    res.send("login to access your short URL's")
-  }
-});
-
-app.get("/register", (req, res) => {
-  if (typeof req.session.id === 'object') {
-    res.redirect("/urls")
-  } else {
-    res.render("register");
-  }
 });
 
 app.post("/register", (req, res, next) => {
@@ -161,15 +185,6 @@ app.post("/register", (req, res, next) => {
     res.send('your email has already been taken');
   }
   res.redirect(302, "/login");
-});
-
-app.get("/login", (req, res) => {
-
-  if (req.session.id === undefined) {
-    res.render("login");
-  } else {
-    res.redirect("/urls")
-  }
 });
 
 app.post("/login", (req, res) => {
@@ -202,24 +217,6 @@ app.delete("/urls/:id/delete", (req, res) => {
   res.redirect("/urls")
 });
 
-app.get(`/u/:shortURL`, (req, res) => {
-  const short = urlDatabase[req.params.shortURL];
-  const thisVisit = req.session.visitor;
-  if (short === undefined) {
-    res.send('that isn\'t a valid short URL');
-  }
-  if (thisVisit === undefined) {
-    req.session.visitor = generateRandomString();
-  }
-  if (short['visitors'][thisVisit] === undefined) {
-    short['visitors'][thisVisit] = true;
-    short['viewsU']++
-  }
-  short['views']++;
-  short['listOfViews'].push(`${thisVisit} ${now}`);
-  const longURL = urlDatabase[req.params.shortURL].url;
-  res.redirect(longURL);
-});
 
 app.listen(PORT, () => {
   console.log(`Tiny App listening on port ${PORT}!`);

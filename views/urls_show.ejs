@@ -1,9 +1,11 @@
 <head>
   <%- include('partials/head'); -%>
 </head>
+
 <header>
   <%- include('partials/_header'); -%>
 </header>
+
 <body>
   <nav class="navbar navbar-default" role="navigation" style="width: 33%; margin: auto;">
     <div style="padding: 20px; border-radius:10px; background-color: rgba(0, 0, 0, 0.377); box-shadow: 0px 0px 40px aqua; margin: auto;">
@@ -23,13 +25,13 @@
           <div style=" width:fit-content; margin: auto">
             <a style="margin: auto; color: aqua; text-shadow: 0px 0px 4px">
             <%= index + 1 %>. viewer id: <%= view %>
-              </br>
+            </br>
             </a>
           </div>
         <% }); %>
       <% } %>
-      </nav>
     </div>
   </nav>
 </body>
+
 </html>

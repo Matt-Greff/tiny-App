@@ -3,14 +3,15 @@
 <head>
   <%- include('partials/head'); -%>
 </head>
+
 <header>
   <%- include('partials/_header'); -%>
 </header>
 
 <body>
-    <nav class="navbar navbar-default" role="navigation" style="width: fit-content; margin: auto;">
-        <div style="border-radius:10px;padding:15px;background-color: black;box-shadow: 0px 0px 40px aqua; margin: 0px; padding-top: 25px">
-            <% if(user_id === undefined) { %>
+  <nav class="navbar navbar-default" role="navigation" style="width: fit-content; margin: auto;">
+    <div style="border-radius:10px;padding:15px;background-color: black;box-shadow: 0px 0px 40px aqua; margin: 0px; padding-top: 25px">
+      <% if(user_id === undefined) { %>
       <form method="POST" action="/login" style="color:orange; text-shadow: 0px 0px 4px; border-radius: inherit;">
         Login
         <input id="email" name="email" type="text" placeholder="email">
