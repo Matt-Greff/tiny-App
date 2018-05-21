@@ -41,44 +41,18 @@ function emailAuthenticator(form, cookie) {
   }
   return cookie ? false : true;
 }
-function toTimeZone(time, zone) {
+function now() {
   var format = 'YYYY/MM/DD HH:mm';
-  return moment(time, format).tz(zone).format(format);
+  return moment(moment(), format).tz('America/Vancouver').format(format);
 }
 
-const now = toTimeZone(moment(), 'America/Vancouver');
-
 const urlDatabase = {
-  "b2xVn2": {
-    url: "http://www.lighthouselabs.ca",
-    origin: "user1",
-    views: 0,
-    viewsU: 0,
-    visitors: {},
-    created: '12/03/1997 01:00'
-  },
-  "9sm5xK": {
-    url: "http://www.google.com",
-    origin: "d3s2a1",
-    views: 0,
-    viewsU: 0,
-    visitors: {},
-    created: '12/10/1920 13:00'
-  }
+
 }
 
 const users = {
-  "user1": {
-    id: "user1",
-    email: "user@example.com",
-    password: bcrypt.hashSync("asdf", 10)
-  },
-  "d3s2a1": {
-    id: "d3s2a1",
-    email: "user2@example.com",
-    password: bcrypt.hashSync("ldsa", 10)
-  }
-};
+
+}
 
 app.get("/", (req, res) => {
   const templateVars = {
@@ -96,6 +70,23 @@ app.get("/urls", (req, res) => {
     urls: urlDatabase,
   };
   res.render("urls_index", templateVars);
+});
+
+app.get("/login", (req, res) => {
+
+  if (req.session.id === undefined) {
+    res.render("login");
+  } else {
+    res.redirect("/urls")
+  }
+});
+
+app.get("/register", (req, res) => {
+  if (typeof req.session.id === 'object') {
+    res.redirect("/urls")
+  } else {
+    res.render("register");
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -118,23 +109,6 @@ app.get("/urls/:id", (req, res) => {
   }
 });
 
-app.get("/login", (req, res) => {
-
-  if (req.session.id === undefined) {
-    res.render("login");
-  } else {
-    res.redirect("/urls")
-  }
-});
-
-app.get("/register", (req, res) => {
-  if (typeof req.session.id === 'object') {
-    res.redirect("/urls")
-  } else {
-    res.render("register");
-  }
-});
-
 app.get(`/u/:shortURL`, (req, res) => {
 
   const short = urlDatabase[req.params.shortURL];
@@ -150,7 +124,7 @@ app.get(`/u/:shortURL`, (req, res) => {
     short['viewsU']++
   }
   short['views']++;
-  short['listOfViews'].push(`${thisVisit} ${now}`);
+  short['listOfViews'].push(`${thisVisit} ${now()}`);
   const longURL = urlDatabase[req.params.shortURL].url;
   res.redirect(longURL);
 });
@@ -163,7 +137,7 @@ app.post("/urls", (req, res) => {
     origin: req.session.id.id,
     views: 0,
     viewsU: 0,
-    created: now,
+    created: now(),
     visitors: {},
     listOfViews: []
   }
@@ -202,14 +176,14 @@ app.post("/login", (req, res) => {
   }
 });
 
-app.delete("/logout", (req, res) => {
-  req.session = null;
-  res.redirect(302, "/login")
-});
-
 app.put("/urls/:id/edit", (req, res) => {
   urlDatabase[req.params.id].url = req.body.longURL;
   res.redirect("/urls");
+});
+
+app.delete("/logout", (req, res) => {
+  req.session = null;
+  res.redirect(302, "/login")
 });
 
 app.delete("/urls/:id/delete", (req, res) => {
